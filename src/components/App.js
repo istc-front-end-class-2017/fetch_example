@@ -1,20 +1,39 @@
 import React, { Component } from 'react';
-import logo from '../images/logo.svg';
+import loading from '../images/giphy.gif';
 import '../stylesheets/App.css';
 
 class App extends Component {
+
+  constructor(){
+    super();
+    this.state = {
+      loading: true,
+      userData: {}
+    };
+  }
+
+  async componentDidMount(){
+    const response = await fetch('https://api.github.com/users/joewalnes');
+    const data = await response.json();
+    this.setState({userData: data, loading: false});
+  }
+  
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
+    if (this.state.loading){
+      return  (
+        <div className="App">
+          <img src={loading} />
+        </div>
+      );
+    }
+    else {
+      return (
+        <div className="App">
+          <img src={this.state.userData.avatar_url} />
+          <p>{this.state.userData.login}</p>
+        </div>
+      )
+    }
   }
 }
 
